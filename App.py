@@ -122,13 +122,13 @@ col1, col2, col3 = st.columns(3)
 button_prompt = None
 
 with col1:
-    if st.button("Funny: Podcast Idea"):
+    if st.button("Podcast Idea"):
         button_prompt = "I'm starting a podcast about bottled water. Genius or crazy?"
 with col2:
-    if st.button("Advice: Stuck in Job"):
+    if st.button("Stuck in Job"):
         button_prompt = "I'm stuck in a dead-end job. How do I know when to quit?"
 with col3:
-    if st.button("Hug: I messed up"):
+    if st.button("I messed up"):
         button_prompt = "I messed up big time. Is it possible to be honest and still be loved?"
 
 # 5. CHAT LOGIC
