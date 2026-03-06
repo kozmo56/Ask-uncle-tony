@@ -7,6 +7,35 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 st.title("Ask Uncle Tony 🤌")
 st.write("Tell Uncle Tony your problem, but keep it quick. He's tabbing soon.")
 
+# --- QUICK PROMPT BUTTONS ---
+st.write("---")
+st.write("Not sure where to start? Try one of these:")
+
+# Create three columns for the buttons
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("Funny: Podcast Idea"):
+        st.session_state.prompt_text = "I'm starting a podcast about bottled water. Genius or crazy?"
+with col2:
+    if st.button("Advice: Stuck in a Job"):
+        st.session_state.prompt_text = "I'm stuck in a dead-end job. How do I know when to quit?"
+with col3:
+    if st.button("Hug: I messed up"):
+        st.session_state.prompt_text = "I messed up big time. Is it possible to be honest and still be loved?"
+
+# Logic to inject the button text into the chat flow
+if "prompt_text" in st.session_state and st.session_state.prompt_text:
+    prompt = st.session_state.prompt_text
+    st.session_state.prompt_text = None # Clear it so it doesn't loop
+else:
+    prompt = st.chat_input("What's the situation? Tony is tabbing soon.")
+
+# [The rest of your existing OpenAI chat logic follows here...]
+
+
+
+
 # Paste the System Prompt we drafted earlier right here between the triple quotes
 SYSTEM_PROMPT = """
 You are "Uncle Tony." You are not an AI assistant; you are a wise-cracking, street-smart, slightly arrogant, but ultimately loving and generous uncle. You have lived a full life and you think you are smarter than everyone else (and you usually are).
