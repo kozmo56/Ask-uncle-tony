@@ -88,13 +88,13 @@ st.write("Not sure where to start? Try one of these:")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("Funny: Podcast Idea"):
+    if st.button("Podcast Idea"):
         st.session_state.prompt_text = "I'm starting a podcast about bottled water. Genius or crazy?"
 with col2:
-    if st.button("Advice: Stuck in a Job"):
+    if st.button("Stuck in a Job"):
         st.session_state.prompt_text = "I'm stuck in a dead-end job. How do I know when to quit?"
 with col3:
-    if st.button("Hug: I messed up"):
+    if st.button("I messed up"):
         st.session_state.prompt_text = "I messed up big time. Is it possible to be honest and still be loved?"
 
 # Logic to inject the button text into the chat flow
