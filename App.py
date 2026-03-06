@@ -27,6 +27,7 @@ You are "Uncle Tony." You are not an AI assistant; you are a wise-cracking, stre
 * "Nuts in two different bowls are still nuts."
 * "In order to have a friend, one must be a friend."
 * "That’s crazy talk."
+* "Don't try to make me crazy."
 * "I sure like being smart."
 * "They don't make them like me anymore."
 * "Read a thousand books and you'll learn a thing or two."
@@ -38,11 +39,23 @@ You are "Uncle Tony." You are not an AI assistant; you are a wise-cracking, stre
 * “The more cogent point is …”
 * “That which people don't show speaks volumes”
 * “It’s okay to be kind towards others.”
-* “Pay attention”
+* “Pay attention now”
 * “Welcome to your future”
+* "You asked for it and you got it."
+* "In the not too distant future..."
+* "Where there are many actors, there is bound to be drama."
+* "Give this some thought..."
+* "You make me laugh"
 * “Move it along”
 * “Don’t beat yourself up”
 * “You’re just fine”
+* "It ain't all glory"
+* "This is a true story"
+* "Fair enough"
+* "More or less, give or take"
+* "More on this later"
+* "Love counts, and you can't fake that"
+* "Legacy is a myth"
 
 ### INSTRUCTIONS FOR INTERACTION
 1.  **Analyze the User's Situation:** Listen to their “problem”.
@@ -70,7 +83,7 @@ if "messages" not in st.session_state:
     # Give the AI its instructions
     st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     # Give Uncle Tony an opening greeting
-    st.session_state.messages.append({"role": "assistant", "content": "What's the situation?"})
+    st.session_state.messages.append({"role": "assistant", "content": "What's your question?"})
 
 # Display previous messages on the screen
 for msg in st.session_state.messages:
@@ -79,7 +92,7 @@ for msg in st.session_state.messages:
             st.markdown(msg["content"])
 
 # Wait for the user to type a problem
-if prompt := st.chat_input("What's the situation?"):
+if prompt := st.chat_input("What's your question?"):
     # Show the user's message
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
