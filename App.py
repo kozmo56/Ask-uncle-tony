@@ -97,15 +97,6 @@ with col3:
     if st.button("I messed up"):
         st.session_state.prompt_text = "I messed up big time. Is it possible to be honest and still be loved?"
 
-# Logic to inject the button text into the chat flow
-if "prompt_text" in st.session_state and st.session_state.prompt_text:
-    prompt = st.session_state.prompt_text
-    st.session_state.prompt_text = None # Clear it so it doesn't loop
-else:
-    prompt = st.chat_input("What's the situation? Tony is tabbing soon.")
-
-# [The rest of your existing OpenAI chat logic follows here...]
-
 
 
 
