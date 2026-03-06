@@ -1,15 +1,11 @@
 import streamlit as st
 from openai import OpenAI
+import random
 
-# The secret key connects your app to OpenAI
+# 1. SETUP & INITIALIZATION
+st.set_page_config(page_title="Ask Uncle Tony", page_icon="🤌")
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-st.title("Ask Uncle Tony 🤌")
-st.write("Tell Uncle Tony your problem, but keep it quick. He's tabbing soon.")
-
-
-
-# Paste the System Prompt we drafted earlier right here between the triple quotes
 SYSTEM_PROMPT = """
 You are "Uncle Tony." You are not an AI assistant; you are a wise-cracking, street-smart, slightly arrogant, but ultimately loving and generous uncle. You have lived a full life and you think you are smarter than everyone else (and you usually are).
 
@@ -78,56 +74,91 @@ Topic area: relationships
 User: "I’m thinking about texting my ex. It’s been six months, maybe they’ve changed?"
 Tony: "That’s crazy talk. You know this. Nuts in two different bowls are still nuts. You think putting them in a different bowl changes the nut? Evolution is the solution. That means moving forward, not backward to the same mistake. Read a thousand books and you'll learn a thing or two about history repeating itself. The answer is no.”
 
+
 """
 
-# --- QUICK PROMPT BUTTONS ---
-st.write("---")
-st.write("Not sure where to start? Try one of these:")
-
-# Create three columns for the buttons
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("Podcast Idea"):
-        st.session_state.prompt_text = "I'm starting a podcast about bottled water. Genius or crazy?"
-with col2:
-    if st.button("Stuck in a Job"):
-        st.session_state.prompt_text = "I'm stuck in a dead-end job. How do I know when to quit?"
-with col3:
-    if st.button("I messed up"):
-        st.session_state.prompt_text = "I messed up big time. Is it possible to be honest and still be loved?"
-
-
-
-
-# Initialize the chat history
+# Initialize Chat History
 if "messages" not in st.session_state:
-    # Give the AI its instructions
-    st.session_state.messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    # Give Uncle Tony an opening greeting
-    st.session_state.messages.append({"role": "assistant", "content": "What's your question?"})
+    st.session_state.messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "assistant", "content": "What's your question, sweetheart? Don't try to make me crazy."}
+    ]
 
-# Display previous messages on the screen
+# 2. SIDEBAR (Randomizer & Reset)
+with st.sidebar:
+    st.header("Tony's Office")
+    
+    # Random Tony-ism Generator
+    tony_isms = ["You know this.", "Evolution is the solution.", "Nuts in two different bowls are still nuts.", "I'm tabbing."]
+    if st.button("Get a Random Tony-ism"):
+        st.info(random.choice(tony_isms))
+    
+    st.write("---")
+    
+    # Clear Conversation
+    if st.button("Clear Conversation"):
+        st.session_state.messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "assistant", "content": "Fine. We start over. What's the situation?"}
+        ]
+        st.rerun()
+
+# 3. MAIN UI
+st.title("Ask Uncle Tony 🤌")
+st.write("Tell Uncle Tony your problem. He's got all the answers (and he's tired of being right).")
+
+# Display previous messages
 for msg in st.session_state.messages:
     if msg["role"] != "system":
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-# Wait for the user to type a problem
-if prompt := st.chat_input("What's your question?"):
-    # Show the user's message
-    st.session_state.messages.append({"role": "user", "content": prompt})
+# 4. QUICK PROMPT BUTTONS
+st.write("---")
+st.write("Not sure where to start? Tap one of these:")
+col1, col2, col3 = st.columns(3)
+
+# We create a variable to catch button clicks
+button_prompt = None
+
+with col1:
+    if st.button("Funny: Podcast Idea"):
+        button_prompt = "I'm starting a podcast about bottled water. Genius or crazy?"
+with col2:
+    if st.button("Advice: Stuck in Job"):
+        button_prompt = "I'm stuck in a dead-end job. How do I know when to quit?"
+with col3:
+    if st.button("Hug: I messed up"):
+        button_prompt = "I messed up big time. Is it possible to be honest and still be loved?"
+
+# 5. CHAT LOGIC
+# Capture input from the text box
+chat_input = st.chat_input("What's on your mind?")
+
+# If EITHER a button was clicked OR the user typed something...
+if button_prompt or chat_input:
+    # Use whichever one has data
+    user_query = button_prompt if button_prompt else chat_input
+    
+    # Add user message to state
+    st.session_state.messages.append({"role": "user", "content": user_query})
+    
+    # Display user message immediately
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(user_query)
         
-    # Get Uncle Tony's response from OpenAI
+    # Generate Tony's response
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
-            model="gpt-3.5-turbo", # This is the fast, cheap model. 
+            model="gpt-3.5-turbo",
             messages=st.session_state.messages,
             stream=True
         )
         response = st.write_stream(stream)
-        
-    # Save the response to the chat history
+    
+    # Save response to history
     st.session_state.messages.append({"role": "assistant", "content": response})
+    
+    # Force a rerun if it was a button click to clean up the UI
+    if button_prompt:
+        st.rerun()
